@@ -394,6 +394,50 @@ head addition(head h1, head h2){
 }
 
 
+head multiplication(head h1, head h2){
+		head result, h3, h4;
+		list l;
+		int count = 0;
+		init_head(&result);
+		init_head(&h3);
+		init_head(&h4);
+
+		if(isZero(h1) || isZero(h2)){
+				make_node_backward(&result->integer, 0);
+				return result;
+		}
+		l = h2->integer;
+		h3 = multi(h1, l->value);
+		l = l->next;
+		count++;
+
+		while(l){
+				h4 = multi(h1, l->value);
+				for(int i = 0; i < count; i++){
+						make_node_backward(&h4->integer, 0);
+				}
+				h3 = addition(h3, h4);
+				l = l->next;
+				count++;
+		}
+		result = h3;
+		result->count = h1->count + h2->count;
+		
+		count = 2;
+
+		for(int i = 0; i < count; i++){
+			reverse(result);
+			while(result->integer->next != NULL && result->integer->value == 0 && result->count > 0){
+					l = result->integer->next;
+					free(result->integer);
+					result->integer = l;
+					if(i != 0){
+							result->count--;
+					}
+			}
+		}
+		return result;
+}
 
 void insert(head h, int value, bool point){
 		make_node_backward(&h->integer, value);
@@ -459,7 +503,7 @@ void insert(head h, int value, bool point){
 		
 		head number;
 	//	number = substract(number1, number2);
-		number = addition(number1, number2);
+		number = multiplication(number1, number2);
 		//int num;
 		//num = big(number1, number2);
 		//printf("%d", num);
