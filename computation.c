@@ -1,15 +1,7 @@
-#include "stack.h" 
-#include "postfix.h"
+//#include "postfix.h"
 #include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-
-typedef struct num{
-		list integer;
-		list float_num;
-		int count;
-		int sign;
-}num;
+//#include <stdio.h>
+#include "computation.h"
 
 typedef num *head;
 
@@ -446,7 +438,7 @@ void insert(head h, int value, bool point){
 		return;
 }
 
-  int main(){
+/*  int main(){
   //		list l1 = NULL, l2 = NULL, l3 = NULL;
   //		printf("Enter first numberber: ");
   //		input_num(&l1);
@@ -471,7 +463,6 @@ void insert(head h, int value, bool point){
   		int index = 0;
  		precedence token;
 		if((token = get_token(str1, &index)) == operand){
-				//head number1 = NULL;
 				insert(number1, str1[index - 1] - '0', false);
 				while((token = get_token(str1, &index)) == operand){
 						insert(number1, str1[index - 1] - '0', false);
@@ -538,7 +529,7 @@ void insert(head h, int value, bool point){
 		//int n = power(10, 5);
 		//printf("%d\n", n);
 		return 0;
-}
+}*/
 
 			
 				
