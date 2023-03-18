@@ -4,7 +4,6 @@
 
 typedef struct num{
 		list integer;
-		list float_num;
 		int count;
 		int sign;
 }num;

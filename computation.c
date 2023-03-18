@@ -8,7 +8,6 @@ typedef num *head;
 void init_head(head *h){
 		*h = (num*)malloc(sizeof(num));
 		(*h)->integer = NULL;
-		(*h)->float_num = NULL;
 		(*h)->count = 0;
 }
 
@@ -107,7 +106,7 @@ head substract(head h1, head h2){
 		list l1, l2;
 		int num, count = 0, count1, count2;
 		init_head(&result);
-
+			
 		count1 = h1->count;
 		count2 = h2->count;
 		if(count1 > count2){
@@ -125,6 +124,17 @@ head substract(head h1, head h2){
 				result->count = h2->count;
 		}
 		num = big(h1, h2);
+		if(h1->sign == -1){
+				result = addition(h1, h2);
+				result->sign = -1;
+				return result;
+		}
+		else if(h2->sign == -1){
+				result = addition(h1, h2);
+				result->sign = 1;
+				return result;
+		}
+
 		if(num == 1){
 				l1 = h1->integer;
 				l2 = h2->integer;
@@ -254,9 +264,9 @@ int power(int num, int raise){
 }
 
 head divide(head h2, head h1){
-		if(isZero(h1) || isZero(h2))
+		if(isZero(h1) && isZero(h2))
 				return NULL;
-		int num = 1, num1, count = 0;
+		int num = 1, num1, num2, count = 0;
 		stack s;
 		init(&s);
 		head result, temp, h3;
@@ -265,9 +275,12 @@ head divide(head h2, head h1){
 		init_head(&temp);
 		add_elements_to_stack(h2->integer, &s);
 		make_node_backward(&h3->integer, pop(&s));
-		num1 = h1->count;
+	   	num1 = big(h2, h1);	
+		if(num1 == -1){
+				make_node_backward(&result->integer, 0);
+		}
+		num2 = h1->count;
 		h1->count = 0;
-
 		temp = substract(h3, h1);
 		while(temp->sign == -1 && !isEmpty(&s)){
 				make_node_backward(&h3->integer, pop(&s));
@@ -283,9 +296,9 @@ head divide(head h2, head h1){
 						}
 						count++;
 				}
-				count = 0;
 				if(isEmpty(&s))
 						break;
+				count = 0;
 				temp = substract(h1, h3);
 				while(temp->sign != 1){
 						temp = multi(h1, ++num);
@@ -321,10 +334,15 @@ head divide(head h2, head h1){
 				num = 1;
 				count = 0;
 		}
-		h1->count = num1;
+		h1->count = num2;
+		for(int i = 0; i < h2->count; i++)
+				result->count++;
 
 		for(int i = 0; i < h1->count; i++)
-				result->count--;
+				if(result->count == 0)
+						make_node_backward(&result->integer, 0);
+				else
+						result->count--;
 		return result;
 
 }
@@ -341,6 +359,19 @@ head divide(head h2, head h1){
 
 head addition(head h1, head h2){
 		head sum_num;
+		if(h1->sign == -1 && h2->sign != -1){
+				h1->sign = 1;
+				sum_num = substract(h1, h2);
+				sum_num->sign = -1;
+				h1->sign = -1;
+				return sum_num;
+		}
+		if(h1->sign != -1 && h2->sign == -1){
+				h2->sign = 1;
+				sum_num = substract(h1, h2);
+				h2->sign = -1;
+				return sum_num;
+		}
 		init_head(&sum_num);
 		list l1, l2;
 		l1 = h1->integer;
@@ -400,11 +431,13 @@ head multiplication(head h1, head h2){
 		}
 		l = h2->integer;
 		h3 = multi(h1, l->value);
+		h3->sign = 1;
 		l = l->next;
 		count++;
 
 		while(l){
 				h4 = multi(h1, l->value);
+				h4->sign = 1;
 				for(int i = 0; i < count; i++){
 						make_node_backward(&h4->integer, 0);
 				}
@@ -428,6 +461,8 @@ head multiplication(head h1, head h2){
 					}
 			}
 		}
+		if((h1->sign == -1 && h2->sign != -1) || (h1->sign != -1 && h2->sign == 1))
+				result->sign = -1;
 		return result;
 }
 

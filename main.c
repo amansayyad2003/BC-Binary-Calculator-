@@ -3,6 +3,8 @@
 #include "postfix.h"
 #include "stack_num.h"
 
+#define SIZE 1000000
+
 void Display(stack_num postfix){
 		list_stack temp;
 		init_stack_num(&temp);
@@ -59,6 +61,7 @@ void evaluation(stack_num *s){
 //						printf("\n");
 				}
 				else if(num->integer->value == '-'){
+
 						push_num(&intermediate, substract(pop_num(&intermediate), pop_num(&intermediate)));
 				}
 				else if(num->integer->value == '*'){
@@ -74,6 +77,9 @@ void evaluation(stack_num *s){
 		reverse(intermediate->number);
 		l = intermediate->number->integer;
 		int count = count_node(l);
+		printf("Result: ");
+		if(intermediate->number->sign == -1)
+					printf("-");
 		while(l){
 				if(intermediate->number->count > 0 && intermediate->number->count == count )
 						printf(".");
@@ -87,13 +93,12 @@ void evaluation(stack_num *s){
 
 
 int main(){
-		char str1[1000];
+		printf("-> Simple BC which will give result of infix expression\n");
+		printf("-> To know what this bc can do look at README_FILE\n\n");
+		printf("!!!!!!	press CTRL_D to EXIT !!!!!!\n\n");
+		char str1[SIZE];
 		char a;
 		int i = 0;
-		while((a = getchar()) != '\n'){
-				str1[i++] = a;
-		}
-		str1[i] = '\0';
 		head number1, number2;
 		init_head(&number1);
 		init_head(&number2);
@@ -101,14 +106,23 @@ int main(){
 		stack_num postfix, temp;
 		init_stack_num(&postfix);
 		init_stack_num(&temp);
-		//if((token = get_token(str1, &index)) == operand){
-		//		insert(number1, str1[index - 1] - '0', false);
-		while(index != i){
+		while(1){
+				printf(">> ");
+		while((a = getchar()) != '\n'){
+				str1[i++] = a;
+		}
+		str1[i] = '\0';
+
+		while(str1[index] != '\0'){
+				if(str1[index] == ' '){
+						index++;
+						continue;
+				}
 				while((token = str1[index]) >= '0' && token <= '9'){
 						insert(number1, str1[index++] - '0', false);
 				}
-				if(token == point){
-				//		index++;
+				if(token == '.'){
+						index++;
 						while((token = str1[index]) >= '0' && token <= '9'){
 						//while((token = get_token(str1, index)) == operand){
 								insert(number1, str1[index++] - '0', true);
@@ -118,7 +132,7 @@ int main(){
 						push_num(&postfix, number1);
 			//	Display(postfix);
 				
-				if(isEmpty_stack_num(&temp) && token != '\0')
+				if(isEmpty_stack_num(&temp) && (token == '+' || token == '-' || token == '*' || token == '/' || token == '(' || token == ')'))
 						insert(number2, str1[index++], false);
 				else if(token == '(')
 						insert(number2, str1[index++], false);
@@ -142,13 +156,13 @@ int main(){
 						insert(number2, str1[index++], false);
 				}
 				else if(token == '+'){
-						while(!isEmpty_stack_num(&temp) && (peek_num(&temp)->integer->value == '-' || peek_num(&temp)->integer->value == '*' || peek_num(&temp)->integer->value == '+')){
+						while(!isEmpty_stack_num(&temp) && (peek_num(&temp)->integer->value == '/' || peek_num(&temp)->integer->value == '-' || peek_num(&temp)->integer->value == '*' || peek_num(&temp)->integer->value == '+')){
 								push_num(&postfix, pop_num(&temp));
 						}
 						insert(number2, str1[index++], false);
 				}
 				else if(token == '-'){
-						while(!isEmpty_stack_num(&temp) && (peek_num(&temp)->integer->value == '-' || peek_num(&temp)->integer->value == '*' || peek_num(&temp)->integer->value == '-')){
+						while(!isEmpty_stack_num(&temp) && (peek_num(&temp)->integer->value == '-' || peek_num(&temp)->integer->value == '*' || peek_num(&temp)->integer->value == '/')){
 								push_num(&postfix, pop_num(&temp));
 						}
 						insert(number2, str1[index++], false);
@@ -157,8 +171,6 @@ int main(){
 						push_num(&temp, number2);
 				init_head(&number1);
 				init_head(&number2);
-//				Display(temp); 
-				
 		}
 
 //		Display(postfix); 
@@ -169,9 +181,12 @@ int main(){
 		reverse_stak_num(&postfix);
 		//Display(postfix); 
 		evaluation(&postfix);
+		printf("\n");
 //		Display(temp);
 	//	printf("%d\n", postfix->number->integer->value);
 	//	printf("%c\n", temp->number->integer->value);
+}
+		
 		return 0;
 }
 	
