@@ -1,11 +1,11 @@
 #include <stdio.h>
-//#include "computation.h"
-#include "postfix.h"
-#include "stack_num.h"
+#include "postfix/postfix.h"
+//#include "stack_num.h"
+#include "evaluation.h"
 
 #define SIZE 1000000
 
-void Display(stack_num postfix){
+/*void Display(stack_num postfix){
 		list_stack temp;
 		init_stack_num(&temp);
 		temp = postfix;
@@ -20,9 +20,9 @@ void Display(stack_num postfix){
 				temp = temp->next;
 		}
 		printf("\n");
-}
+}*/
 
-void reverse_stak_num(stack_num *s){
+/*void reverse_stak_num(stack_num *s){
 		stack_num temp;
 		init_stack_num(&temp);
 		while(!isEmpty_stack_num(s))
@@ -55,10 +55,8 @@ void evaluation(stack_num *s){
 						h = peek_num(&intermediate);
 						l = h->integer;
 						while(l){
-//							printf("%d", l->value);
 							l = l->next;
 						}
-//						printf("\n");
 				}
 				else if(num->integer->value == '-'){
 
@@ -89,7 +87,7 @@ void evaluation(stack_num *s){
 		}
 		printf("\n");
 		return;
-}
+}*/
 
 
 int main(){
@@ -124,13 +122,11 @@ int main(){
 				if(token == '.'){
 						index++;
 						while((token = str1[index]) >= '0' && token <= '9'){
-						//while((token = get_token(str1, index)) == operand){
 								insert(number1, str1[index++] - '0', true);
 						}
 				}
 				if(number1->integer != NULL)
 						push_num(&postfix, number1);
-			//	Display(postfix);
 				
 				if(isEmpty_stack_num(&temp) && (token == '+' || token == '-' || token == '*' || token == '/' || token == '(' || token == ')'))
 						insert(number2, str1[index++], false);
@@ -173,18 +169,12 @@ int main(){
 				init_head(&number2);
 		}
 
-//		Display(postfix); 
-//		Display(temp); 
 		while(!isEmpty_stack_num(&temp)){
 				push_num(&postfix, pop_num(&temp));
 		}
 		reverse_stak_num(&postfix);
-		//Display(postfix); 
 		evaluation(&postfix);
 		printf("\n");
-//		Display(temp);
-	//	printf("%d\n", postfix->number->integer->value);
-	//	printf("%c\n", temp->number->integer->value);
 }
 		
 		return 0;
