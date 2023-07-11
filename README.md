@@ -1,1 +1,1 @@
-# BC-Binary-Calculator-
+# BC-Basic-Calculator-
